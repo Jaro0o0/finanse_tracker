@@ -5,6 +5,8 @@ import pandas as pd
 
 from pathlib import Path
 
+import subprocess
+
 # CASH_FLOW
 
 # ending nie wpien byc  po dodaniu
@@ -81,25 +83,24 @@ def add_finanse():
                 cursor.execute('SELECT * FROM FINANSE')
                 expenese = cursor.fetchall()
 
-                if len(expenese) >= 3:
-                    print('Trwa tworzenie prognozy...')
-                    try:
-                        # train_cash_flow reads the FINANSE table itself.
-                        from ai.train import train_cash_flow
 
-                        predictions = train_cash_flow()
-                    except (ImportError, ModuleNotFoundError) as error:
-                        print(f'Brakuje biblioteki potrzebnej do prognozy: {error}')
-                        continue
-                    except ValueError as error:
-                        print(error)
-                        continue
-
-                    print('Prognozowane wydatki:')
-                    for prediction in predictions.itertuples(index=False):
-                        print(f'{prediction.ds.date():%Y-%m-%d}: {prediction.yhat1:.2f} zł')
+                #Launch Prognose
+                if subprocess.poll() is None:
+                    print('wait tranning is in progress...')
                 else:
-                    print('AI potrzebuje co najmniej 3 zapisanych wydatków.')
+                    if len(expenese) >= 3:
+                        print('Trwa tworzenie prognozy...')
+                    else:
+                        print('Do prognozy potrzebne są co najmniej 3 wydatki.')
+                  
+                            
+
+                            
+                        
+
+      
+                   
+                        
                     
             case '4':
                 sys.exit()
