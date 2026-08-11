@@ -1,6 +1,8 @@
 import sqlite3
+from pathlib import Path
 
-engine = sqlite3.connect('finanse.db')
+DATABASE_PATH = Path(__file__).with_name('finanse.db')
+engine = sqlite3.connect(DATABASE_PATH)
 cursor = engine.cursor()
 
 cursor.execute('''

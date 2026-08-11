@@ -1,29 +1,37 @@
+"""Train the cash-flow model using expenses from the SQLite database."""
+
 import pandas as pd
 from neuralprophet import NeuralProphet
 
-#SQL
-from models import cursor, engine
+from models import cursor
 
 
+def train_cash_flow(periods: int = 30) -> pd.DataFrame:
 
-def train_cash_flow(df: pd.DataFrame):
+  
+    cursor.execute('SELECT date, amount FROM FINANSE ORDER BY date')
+    rows = cursor.fetchall()
+    data = pd.DataFrame(rows, columns=['ds', 'y'])
+    data['ds'] = pd.to_datetime(data['ds'])
+    data = data.groupby('ds', as_index=False)['y'].sum()
+
+    # if len(data) < 3:
+    #     raise ValueError('Do prognozy potrzebne są co najmniej 3 wydatki.')
+
     model = NeuralProphet(
-        n_lags=30,
-        yearly_seasonality=True,
-        weekly_seasonality=True,
-        daily_seasonality=True,
+        yearly_seasonality=False,
+        weekly_seasonality=False,
+        daily_seasonality=False,
+        learning_rate=0.01,
+        epochs=100,
+        accelerator='cpu',
+        trainer_config={
+            'enable_checkpointing': False,
+            'logger': False,
+        },
     )
+    model.fit(data, freq='D', progress='none')
+    future = model.make_future_dataframe(data, periods=periods, n_historic_predictions=False)
+    forecast = model.predict(future)
 
-
-    cursor.execute('SELECT date, amount FROM FINANSE')
-    data = cursor.fetchall()
-
-
-
-    print("Start traning...")
-    metrics = model.fit(df, freq="D")
-
-    
-
-    print("Model zapisany.")    
-
+    return forecast[['ds', 'yhat1']].dropna().tail(periods)

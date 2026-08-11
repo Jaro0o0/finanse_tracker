@@ -1,13 +1,13 @@
 from models import Expense, cursor, engine
-from dataclasses import asdict
-import pandas as pd
 import sys
 from datetime import date
-import subprocess
+import pandas as pd
+
+from pathlib import Path
 
 # CASH_FLOW
 
-
+# ending nie wpien byc  po dodaniu
 
 def add_finanse():
     while True:
@@ -27,8 +27,15 @@ def add_finanse():
 
                 user_expnese = Expense(amount, expense_date, cat, desc)
 
-                expnese_df = pd.DataFrame([asdict(user_expnese)])
-                expnese_df.to_sql('Finanse', con=engine, if_exists='append', index=False)
+                cursor.execute(
+                    'INSERT INTO FINANSE (date, amount, category, description) VALUES (?, ?, ?, ?)',
+                    (
+                        user_expnese.date.isoformat(),
+                        user_expnese.amount,
+                        user_expnese.category,
+                        user_expnese.description,
+                    ),
+                )
                 engine.commit()
 
                 break
@@ -57,23 +64,42 @@ def add_finanse():
                         )
                         expenses = cursor.fetchall()
 
+
+                        # SHOW_EXPENSES
                         for expenese in expenses:
                             print(f'Amount: {expenese[0]}, Date: {expenese[1]}, Category: {expenese[2]}, Description: {expenese[3]}')
 
+
+                        #PAth 
+                        desktop = Path.home() / "Desktop" / "plik.csv"
+                        # TO CSV
+                        df = pd.DataFrame(expenses, columns=[desc[0] for desc in cursor.description])
+                        df.to_csv( desktop / f'expenses_{year}_{month}.csv', index=False)
+
+            # AI
             case '3':
                 cursor.execute('SELECT * FROM FINANSE')
                 expenese = cursor.fetchall()
 
                 if len(expenese) >= 3:
-                    print('Prognoza AI nie jest jeszcze podłączona do menu.')
-                    p = subprocess.Popen(
-                        ['python', 'src/ai/train.py'],
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.STDOUT,
-                        text=True
-                        )
+                    print('Trwa tworzenie prognozy...')
+                    try:
+                        # train_cash_flow reads the FINANSE table itself.
+                        from ai.train import train_cash_flow
+
+                        predictions = train_cash_flow()
+                    except (ImportError, ModuleNotFoundError) as error:
+                        print(f'Brakuje biblioteki potrzebnej do prognozy: {error}')
+                        continue
+                    except ValueError as error:
+                        print(error)
+                        continue
+
+                    print('Prognozowane wydatki:')
+                    for prediction in predictions.itertuples(index=False):
+                        print(f'{prediction.ds.date():%Y-%m-%d}: {prediction.yhat1:.2f} zł')
                 else:
-                    print('AI model have to have minimum 3 expenses data ')
+                    print('AI potrzebuje co najmniej 3 zapisanych wydatków.')
                     
             case '4':
                 sys.exit()
