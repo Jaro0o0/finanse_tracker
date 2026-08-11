@@ -89,7 +89,8 @@ def add_finanse():
                     print('wait tranning is in progress...')
                 else:
                     if len(expenese) >= 3:
-                        print('Trwa tworzenie prognozy...')
+                        
+
                     else:
                         print('Do prognozy potrzebne są co najmniej 3 wydatki.')
                   
