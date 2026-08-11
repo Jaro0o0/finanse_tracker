@@ -23,6 +23,7 @@ def train_cash_flow(df: pd.DataFrame):
     print("Start traning...")
     metrics = model.fit(df, freq="D")
 
-    model.save("model.np")
+    
 
     print("Model zapisany.")    
+

@@ -1,10 +1,11 @@
+import sys
+from services.add_finanse import add_finanse
+
+
 def main():
-    pass
-
-
-    cursor.close()
-    engine.close()
-
+    add_finanse()
+            
+       
 
 
 

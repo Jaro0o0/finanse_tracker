@@ -1,10 +1,9 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date
 
 @dataclass
 class Expense:
-    def __int__(self, amount, expense_date, cat, desc):
-        self.amount = amount
-        self.date = expense_date
-        self.cat = cat
-        self.desc = desc
+    amount: float
+    date: date
+    category: str
+    description: str | None = None
