@@ -6,6 +6,7 @@ import pandas as pd
 from pathlib import Path
 
 import subprocess
+from main import process
 
 # CASH_FLOW
 
@@ -89,7 +90,8 @@ def add_finanse():
                     print('wait tranning is in progress...')
                 else:
                     if len(expenese) >= 3:
-                        
+                        output, _ = process.communicate()
+                        print(output)
 
                     else:
                         print('Do prognozy potrzebne są co najmniej 3 wydatki.')

@@ -4,10 +4,14 @@ import subprocess
 
 
 def main():
-    subprocess.Popen([
+    process = subprocess.Popen([
         sys.executable,
         "src/ai/train.py",
-    ])
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True
+    )
 
     add_finanse()
             

@@ -34,4 +34,4 @@ def train_cash_flow(periods: int = 30) -> pd.DataFrame:
     future = model.make_future_dataframe(data, periods=periods, n_historic_predictions=False)
     forecast = model.predict(future)
 
-    return forecast[['ds', 'yhat1']].dropna().tail(periods)
+    print(forecast)
