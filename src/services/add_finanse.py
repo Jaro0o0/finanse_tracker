@@ -5,21 +5,19 @@ import pandas as pd
 
 from pathlib import Path
 
-import subprocess
-from main import process
-
 # CASH_FLOW
 
 # ending nie wpien byc  po dodaniu
 
-def add_finanse():
+def add_finanse(run_forecast):
     while True:
         print('1: Add Expense ')
         print('2: View expenses ')
         print('3: AI expenses prognose ')
-        print('4: Exit  ')
+        print('4: Download expneses as CSV ')
+        print('5: Exit  ')
 
-        user_choose = input('Select option').strip()
+        user_choose = input('Select option: ').strip()
 
         match(user_choose):
             case '1':
@@ -43,7 +41,7 @@ def add_finanse():
 
                 break
 
-                
+            #  VIEW_EXPNESES   
             case '2':
                 print('1: View all expneses')
                 print('2: View expneses by mounth')
@@ -82,19 +80,26 @@ def add_finanse():
             # AI
             case '3':
                 cursor.execute('SELECT * FROM FINANSE')
-                expenese = cursor.fetchall()
+                expenses = cursor.fetchall()
 
+                if len(expenses) < 3:
+                    print('Do prognozy potrzebne są co najmniej 3 wydatki.')
+                    print('If you have a CSV file with expenses, you can import it to the database.')
+                    user_input = input('Do you want to import expenses from a CSV file? (y/n)').strip().lower()
+                    match(user_input):
+                        case 'y':
+                            csv_location = input('enter csv file location:').strip()
+                            try:
+                                df = pd.read_csv(f'{csv_location}')
+                            except FileNotFoundError:
+                                print(f'file not found chceck your file location {csv_location} ')
+                            except pd.errors.EmptyDataError:
+                                print('CSV file is empty')
+              
 
-                #Launch Prognose
-                if subprocess.poll() is None:
-                    print('wait tranning is in progress...')
-                else:
-                    if len(expenese) >= 3:
-                        output, _ = process.communicate()
-                        print(output)
-
-                    else:
-                        print('Do prognozy potrzebne są co najmniej 3 wydatki.')
+                print('Tworzę prognozę, proszę czekać...')
+                output = run_forecast()
+                print(output or 'Skrypt treningu nie zwrócił prognozy.')
                   
                             
 
@@ -102,10 +107,17 @@ def add_finanse():
                         
 
       
-                   
-                        
-                    
+            # DONWLOAD_CSV
             case '4':
+                
+                df = pd.read_sql('FINANSE',con=engine)
+                file_name = input('Enter file name: ')
+                csv_expneses = df.to_csv(f'{file_name}',index=False)
+                print(csv_expneses)
+
+                    
+            case '5':
                 sys.exit()
             case _:
+                print('wrong option')
                 continue

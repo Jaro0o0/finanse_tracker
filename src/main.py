@@ -1,19 +1,13 @@
-import sys
+from ai.run_subprocess import run_forecast
 from services.add_finanse import add_finanse
-import subprocess
+
+
+
+
 
 
 def main():
-    process = subprocess.Popen([
-        sys.executable,
-        "src/ai/train.py",
-        ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True
-    )
-
-    add_finanse()
+    add_finanse(run_forecast)
             
        
 
