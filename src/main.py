@@ -1,8 +1,4 @@
 import sys
-
-from sympy import im
-
-from ai.run_subprocess import run_forecast
 from services.add_finanse import add_finanse
 
 # SERVICES

@@ -2,7 +2,8 @@ from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn, TimeEl
 from models import cursor
 import pandas as pd
 from ai.run_subprocess import run_forecast
-import re
+import threading
+import time
 
 
 # TENEING Z CSV
@@ -11,10 +12,10 @@ def forecast():
     cursor.execute('SELECT * FROM FINANSE')
     expenses = cursor.fetchall()
 
-    if len(expenses) < 3:
-        print('Do prognozy potrzebne są co najmniej 3 wydatki.')
+    if len(expenses) < 7:
+        print('Do prognozy potrzebne są co najmniej 7 wydatków.')
         print('If you have a CSV file with expenses, you can import it to the database.')
-        user_input = input('Do you want to import expenses from a CSV file? (y/n)').strip().lower()
+        user_input = input('Do you want to import expenses from a CSV file? (y/n): ').strip().lower()
         match(user_input):
             case 'y':
                 csv_location = input('enter csv file location:').strip()
@@ -24,31 +25,36 @@ def forecast():
                     print(f'file not found chceck your file location {csv_location} ')
                 except pd.errors.EmptyDataError:
                     print('CSV file is empty')
+            case 'n':
+                print('You can add expenses manually or import them later.')
     
 
-    with Progress(
-        SpinnerColumn(),
-        TextColumn('[progress.description]{task.description}'),
-        BarColumn(),
-        TimeElapsedColumn(),
-        transient=True,
-    ) as progress:
-        task_id = progress.add_task('Trenowanie modelu...', total=100)
+    # with Progress(
+    #     SpinnerColumn(),
+    #     TextColumn('[progress.description]{task.description}'),
+    #     BarColumn(),
+    #     TimeElapsedColumn(),
+    #     transient=True,
+    # ) as progress:
+    #     task_id = progress.add_task('Trenowanie modelu...', total=None)
 
-        def _on_line(line: str):
-            # Try to parse epoch progress like "12/100" or "Epoch 12/100"
-            try:
-                if 'epoch' in line.lower() or '/' in line:
-                    m = re.search(r"(\d+)\s*/\s*(\d+)", line)
-                    if m:
-                        curr = int(m.group(1))
-                        tot = int(m.group(2))
-                        # update total (in case it's different)
-                        progress.update(task_id, total=tot)
-                        progress.update(task_id, completed=curr, description=f'Trenowanie modelu... {curr}/{tot}')
-            except Exception:
-                pass
+    #     result = {}
 
-        output = run_forecast(on_line=_on_line)
+    #     def _target():
+    #         try:
+    #             result['output'] = run_forecast()
+    #         except Exception as e:
+    #             result['output'] = f'Error during training: {e}'
 
-    print(output or 'Skrypt treningu nie zwrócił prognozy.')
+    #     thread = threading.Thread(target=_target, daemon=True)
+    #     thread.start()
+
+    #     # Advance the progress bar while the training subprocess runs
+    #     while thread.is_alive():
+    #         progress.advance(task_id, 1)
+    #         time.sleep(0.2)
+
+    #     thread.join()
+    #     output = result.get('output')
+
+    # print(output or 'Skrypt treningu nie zwrócił prognozy.')
