@@ -1,10 +1,13 @@
+import time
+from rich.progress import track
 from models import cursor
 import pandas as pd
+from ai.run_subprocess import run_forecast
 
 
 # TENEING Z CSV
 
-def forecaast():
+def forecast():
     cursor.execute('SELECT * FROM FINANSE')
     expenses = cursor.fetchall()
 
@@ -23,6 +26,8 @@ def forecaast():
                     print('CSV file is empty')
     
 
-    print('Tworzę prognozę, proszę czekać...')
+    
+    for i in track(range(100), description='Training model...'):
+        time.sleep(0.01)
     output = run_forecast()
     print(output or 'Skrypt treningu nie zwrócił prognozy.')

@@ -1,8 +1,15 @@
 
 
 import pandas as pd
+
 from models import  cursor, engine
 from pathlib import Path
+
+#STYLE
+from rich import print
+from rich.table import Table
+
+
 
 
 
@@ -10,30 +17,43 @@ def view_expenses():
     print('1: View all expneses')
     print('2: View expneses by mounth')
 
-    view_choose = input('Choose option').strip()
+    view_choose = input('Choose option: ').strip()
 
     match(view_choose):
         case '1':
             cursor.execute('SELECT * FROM FINANSE')
             expenses = cursor.fetchall()
+            #CREATE_TABLE
+            table = Table(title='Expenses')
+            table.add_column('Amount', justify='right', style='cyan', no_wrap=True)
+            table.add_column('Date', style='magenta')
+            table.add_column('Category', style='green')
+            table.add_column('Description', style='yellow') 
 
             for expenese in expenses:
-                print(f'Amount: {expenese[0]}, Date: {expenese[1]}, Category: {expenese[2]}, Description: {expenese[3]}')
+                table.add_row(*(str(value) for value in expenese))
+            print(table)
         # Mounth_expenses
         case '2':
-            month = input('select month')
-            year = input('select year')
+            month = input('select month: ').strip()
+            year = input('select year: ').strip()
             cursor.execute(
                 "SELECT * FROM FINANSE WHERE strftime('%m', date) = ? AND strftime('%Y', date) = ?",
                 (month.zfill(2), year),
             )
             expenses = cursor.fetchall()
+            #CREATE_TABLE
+            table = Table(title=f'Expenses for {month}/{year}')
+            table.add_column('Amount', justify='right', style='cyan', no_wrap=True)
+            table.add_column('Date', style='magenta')
+            table.add_column('Category', style='green')
+            table.add_column('Description', style='yellow')
 
 
             # SHOW_EXPENSES
             for expenese in expenses:
-                print(f'Amount: {expenese[0]}, Date: {expenese[1]}, Category: {expenese[2]}, Description: {expenese[3]}')
-
+                table.add_row(*(str(value) for value in expenese))
+            print(table)
 
             #PAth 
             desktop = Path.home() / "Desktop" / "plik.csv"
