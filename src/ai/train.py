@@ -1,7 +1,7 @@
-"""Train the cash-flow model using expenses from the SQLite database."""
-
 import pandas as pd
 from neuralprophet import NeuralProphet
+from rich.console import Console
+from rich.table import Table
 
 from models import cursor
 
@@ -40,10 +40,15 @@ def train_cash_flow(periods: int = 30) -> pd.DataFrame:
 
 if __name__ == '__main__':
     forecast = train_cash_flow()
-    forecast['yhat1'] = forecast['yhat1'].round(2)
     if forecast.empty:
         raise SystemExit(1)
 
+    table = Table(title='Prognoza wydatków', header_style='bold light_steel_blue1')
+    table.add_column('Data', justify='center')
+    table.add_column('Przewidywane wydatki', justify='right')
 
-    print('Prognoza wydatków:')
-    print(forecast)
+    for row in forecast.itertuples(index=False):
+        amount = f'{row.yhat1:,.2f}'.replace(',', ' ').replace('.', ',')
+        table.add_row(row.ds.strftime('%d.%m.%Y'), f'{amount} zł')
+
+    Console().print(table)
