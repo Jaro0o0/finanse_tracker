@@ -48,7 +48,7 @@ def forecast():
                                             TimeElapsedColumn(),
                                             transient=True,
                                         ) as progress:
-                                            task_id = progress.add_task('Trenowanie modelu...', total=None)
+                                            task_id = progress.add_task('Training model...', total=None)
                         
                                             result = {}
                         
@@ -69,7 +69,7 @@ def forecast():
                                             thread.join()
                                             output = result.get('output')
                         
-                                            print(output or 'Skrypt treningu nie zwrócił prognozy.')
+                                            print(output or 'The training script did not return a forecast.')
 
                                             break
                 case 'n':

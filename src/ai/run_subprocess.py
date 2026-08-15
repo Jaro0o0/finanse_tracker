@@ -3,10 +3,7 @@ import subprocess
 from pathlib import Path
 
 def run_forecast(on_line=None) -> str:
-    """Run the training subprocess and optionally stream lines to `on_line` callback.
 
-    The `on_line` callback, if provided, will be called with each decoded stdout line.
-    """
     proc = subprocess.Popen(
         [sys.executable, "-m", "ai.train"],
         cwd=Path(__file__).resolve().parent.parent,
@@ -31,10 +28,10 @@ def run_forecast(on_line=None) -> str:
     stdout = "".join(output_lines)
 
     if proc.returncode != 0:
-        return 'Nie udało się utworzyć prognozy. Sprawdź, czy masz co najmniej 3 dni wydatków.'
+        return 'Failed to create forecast. Check if you have at least 3 days of expenses.'
 
-    marker = 'Prognoza wydatków'
+    marker = 'Expense forecast'
     if marker in stdout:
         return stdout[stdout.index(marker):].strip()
 
-    return 'Nie udało się utworzyć prognozy.'
+    return 'Failed to create forecast. Check if you have at least 3 days of expenses.'

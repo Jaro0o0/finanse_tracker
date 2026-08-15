@@ -34,7 +34,7 @@ def train_cash_flow(periods: int = 30) -> pd.DataFrame:
         forecast['yhat1'] = forecast['yhat1'].round(2)
         return forecast
     except Exception:
-        print('Nie udało się utworzyć prognozy. Sprawdź, czy masz co najmniej 3 dni wydatków.')
+        print('Failed to create forecast. Check if you have at least 3 days of expenses.')
         return pd.DataFrame()
 
 
@@ -43,9 +43,9 @@ if __name__ == '__main__':
     if forecast.empty:
         raise SystemExit(1)
 
-    table = Table(title='Prognoza wydatków', header_style='bold light_steel_blue1')
-    table.add_column('Data', justify='center')
-    table.add_column('Przewidywane wydatki', justify='right')
+    table = Table(title='Expense forecast', header_style='bold light_steel_blue1')
+    table.add_column('Date', justify='center')
+    table.add_column('Projected expenses', justify='right')
 
     for row in forecast.itertuples(index=False):
         amount = f'{row.yhat1:,.2f}'.replace(',', ' ').replace('.', ',')
