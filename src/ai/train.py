@@ -24,7 +24,7 @@ def train_cash_flow(periods: int = 30) -> pd.DataFrame:
             daily_seasonality=False,
             learning_rate=0.01,
             epochs=100,
-            n_lags=2,
+            n_forecasts=30
         
         )
         model.fit(data, freq='D', progress='none')

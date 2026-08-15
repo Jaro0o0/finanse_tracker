@@ -26,7 +26,7 @@ def main():
 
         print(Panel(
             Align.center(menu),
-            title='[bold light_steel_blue1]Welcome to Finanse App[/]',
+            title='[bold light_steel_blue1]Welcome to Finanse Tracker[/]',
             border_style='light_steel_blue1',
             padding=(1, 4),
         ))

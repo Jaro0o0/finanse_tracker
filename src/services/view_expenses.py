@@ -55,11 +55,7 @@ def view_expenses():
                 table.add_row(*(str(value) for value in expenese))
             print(table)
 
-            # #PAth 
-            # desktop = Path.home() / "Desktop" / "plik.csv"
-            # # TO CSV
-            # df = pd.DataFrame(expenses, columns=[desc[0] for desc in cursor.description])
-            # df.to_csv( desktop / f'expenses_{year}_{month}.csv', index=False)
+          
 
 
 
