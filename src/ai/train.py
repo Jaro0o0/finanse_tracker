@@ -16,8 +16,7 @@ def train_cash_flow(periods: int = 30) -> pd.DataFrame:
         data = data.groupby('ds', as_index=False)['y'].sum()
         data = data.set_index('ds').asfreq('D', fill_value=0).reset_index()
 
-        if len(data) < 3:
-            raise ValueError('Za mało danych do utworzenia prognozy.')
+        
 
         model = NeuralProphet(
             yearly_seasonality=False,

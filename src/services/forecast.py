@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
+from rich import print
 from models import cursor,engine
 import pandas as pd
 from ai.run_subprocess import run_forecast
@@ -15,7 +16,7 @@ def forecast():
 
     if len(expenses) < 30:
         while True:
-            user_input =  input('For minimum functionality, at least 30 expenses are required do yo want to continue? (y/n): ').strip().lower()
+            user_input =  input('[dark_orange"]For minimum functionality, at least 30 expenses are required do yo want to continue?[/] (y/n): ').strip().lower()
             match(user_input):
                 case 'y':
 
