@@ -26,7 +26,11 @@ def forecast():
                 case 'y':
 
                     print('If you have a CSV file with expenses, you can import it to the database.')
-                    user_input = input('Do you want to import expenses from a CSV file? (y/n): ').strip().lower()
+                    user_input = Prompt.ask(
+                        '[dark_orange]Do you want to import expenses from a CSV file?[/]',
+                        choices=['y', 'n'],
+                        default='n',
+                    ).strip().lower()
                     match(user_input):
                         case 'y':
                             
