@@ -4,17 +4,17 @@ from models.create_table import engine
 
 desktop = Path.home() / 'Desktop'
 
+
 def download_csv():
-    df = pd.read_sql('FINANSE',con=engine)
+    df = pd.read_sql('SELECT * FROM FINANSE', con=engine)
     file_name = input('Enter file name: ')
-    if(df.empty):
+    if df.empty:
         print('No expenses found in the database.')
     else:
-        csv_expneses = df.to_csv(f'{desktop}/{file_name}',index=False)
-        print(csv_expneses)
+        output_path = desktop / file_name
+        df.to_csv(output_path, index=False)
+        print(f'Exported {len(df)} rows to {output_path}')
 
-   
-    
+  
 
-   
 
