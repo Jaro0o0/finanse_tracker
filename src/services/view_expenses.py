@@ -14,8 +14,8 @@ from rich.table import Table
 
 
 def view_expenses():
-    print('1: View all expneses')
-    print('2: View expneses by mounth')
+    print('[bold light_steel_blue1]1: View all expenses[/]')
+    print('[bold light_steel_blue1]2: View expenses by month[/]')
 
     view_choose = input('Choose option: ').strip()
 

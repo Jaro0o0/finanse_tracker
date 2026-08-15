@@ -31,7 +31,7 @@ def main():
             padding=(1, 4),
         ))
 
-        match(input('selec option: ')):
+        match(input('select option: ')):
             case '1':
                 add_finanse()
             #VIEW_EXPENSES
