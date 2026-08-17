@@ -25,10 +25,11 @@ def view_expenses():
             expenses = cursor.fetchall()
             #CREATE_TABLE
             table = Table(title='Expenses')
-            table.add_column('Amount', justify='right', style='cyan', no_wrap=True)
+            table.add_column('ID', justify='right', style='cyan', no_wrap=True)
             table.add_column('Date', style='magenta')
-            table.add_column('Category', style='green')
-            table.add_column('Description', style='yellow') 
+            table.add_column('Amount', style='green')
+            table.add_column('Description', style='yellow')
+            table.add_column('Category', style='yellow')  
 
             for expenese in expenses:
                 table.add_row(*(str(value) for value in expenese))
